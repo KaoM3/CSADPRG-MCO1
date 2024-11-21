@@ -30,8 +30,8 @@ type corpusAnalysis struct {
 	vocabulary_size int
 	word_frequency map[string]int
 	character_frequency map[rune]int
-	most_frequent_words map[string]int
-	common_stop_words map[string]int
+	stop_word_count map[string]int
+	tweet_frequency map[int]map[string]int
 }
 
 func getFilePath() string {
@@ -42,12 +42,15 @@ func getFilePath() string {
 }
 
 func main() {
+	// Reading file
+	// TODO: Replace with getting input of file location
 	filename := "C:\\Users\\Rafael\\Documents\\GitHub\\CSADPRG-MCO2\\fake_tweets.csv"
 	records, err := ReadCSV(filename)
 	if(err != nil) {
 		log.Fatal("Cannot open and read CSV file")
 	}
 	
+	// Data Analysis
 	wordCount := 0
 	var tweetSlice []Tweet
 
@@ -57,12 +60,19 @@ func main() {
 		wordCount += currTweet.Word_count
 		tweetSlice = append(tweetSlice, currTweet)
 	}
-	fmt.Println(wordCount)
-	GetWordFrequency(tweetSlice)
-	GetCharacterFrequency(tweetSlice)
-	fmt.Println("STOP WORDS")
-	fmt.Println(GetCountStopWords(tweetSlice))
 
-	// Handle the route for displaying the bar chart
-	RenderBarChart()
+	dataAnalysis := corpusAnalysis{
+		word_count: 			wordCount,
+		vocabulary_size: 		len(GetWordFrequency(tweetSlice)),
+		word_frequency:			GetWordFrequency(tweetSlice),
+		character_frequency:	GetCharacterFrequency(tweetSlice),
+		stop_word_count:		GetCountStopWords(tweetSlice),
+		tweet_frequency:		GetTweetFrequency(tweetSlice),
+	}
+
+	fmt.Print(dataAnalysis)
+	// TODO: Order then render
+
+	RenderWordCloud(GetMostFrequentWords(dataAnalysis.word_frequency, 20), "word-cloud.html")
+	RenderTweetFrequency(dataAnalysis.tweet_frequency, "tweet-frequency-chart.html")
 }

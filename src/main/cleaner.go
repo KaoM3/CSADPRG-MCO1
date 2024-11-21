@@ -44,21 +44,26 @@ func stopWords() string {
 	return stop_words
 }
 
-func OrderStringsByValue(mapping map[string]int) {
+func GetMostFrequentWords(mapping map[string]int, size int) map[string]int{
 	var keys []string
+	wordmap := make(map[string]int)
 
 	for key := range mapping {
 		keys = append(keys, key)
 	}
 
 	sort.Slice(keys, func(i, j int) bool {
-		return mapping[keys[i]] < mapping[keys[j]]
+		return mapping[keys[i]] > mapping[keys[j]]
 	})
 
-	fmt.Println("Words sorted by frequency:")
-	for _, key := range keys {
-		fmt.Printf("%s: %d\n", key, mapping[key])
+	for i, key := range keys {
+		fmt.Println(i, key)
+		wordmap[key] = mapping[key]
+		if(i >= size - 1) {
+			break
+		}
 	}
+	return wordmap
 }
 
 func OrderRunesByValue(mapping map[rune]int) {
@@ -69,7 +74,7 @@ func OrderRunesByValue(mapping map[rune]int) {
 	}
 
 	sort.Slice(keys, func(i, j int) bool {
-		return mapping[keys[i]] < mapping[keys[j]]
+		return mapping[keys[i]] > mapping[keys[j]]
 	})
 
 	fmt.Println("Words sorted by frequency:")
@@ -93,7 +98,7 @@ func GetCountStopWords(tweets []Tweet) map[string]int {
 			}
 		}
 	}
-	OrderStringsByValue(stopwordmap)
+
 	return stopwordmap
 }
 
@@ -105,7 +110,7 @@ func GetWordFrequency(tweets []Tweet) map[string]int {
 			wordmap[currToken]++
 		}
 	}
-	OrderStringsByValue(wordmap)
+
 	return wordmap
 }
 
