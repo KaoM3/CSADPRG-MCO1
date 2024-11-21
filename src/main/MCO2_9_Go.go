@@ -75,4 +75,5 @@ func main() {
 
 	RenderWordCloud(GetMostFrequentWords(dataAnalysis.word_frequency, 20), "word-cloud.html")
 	RenderTweetFrequency(dataAnalysis.tweet_frequency, "tweet-frequency-chart.html")
+	RenderSymbolPieChart(GetSymbols(dataAnalysis.character_frequency), "symbol-frequency-chart.html")
 }

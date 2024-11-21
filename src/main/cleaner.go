@@ -10,6 +10,7 @@ package main
 import (
 	"fmt"
 	"regexp"
+	"unicode"
 	"sort"
 	"strings"
 	"time"
@@ -57,7 +58,6 @@ func GetMostFrequentWords(mapping map[string]int, size int) map[string]int{
 	})
 
 	for i, key := range keys {
-		fmt.Println(i, key)
 		wordmap[key] = mapping[key]
 		if(i >= size - 1) {
 			break
@@ -66,21 +66,21 @@ func GetMostFrequentWords(mapping map[string]int, size int) map[string]int{
 	return wordmap
 }
 
-func OrderRunesByValue(mapping map[rune]int) {
+func GetSymbols(mapping map[rune]int) map[rune]int {
 	var keys []rune
+	symbolmap := make(map[rune]int)
 
 	for key := range mapping {
-		keys = append(keys, key)
+		if !unicode.IsLetter(key) && !unicode.IsDigit(key) && !unicode.IsSpace(key) {
+			keys = append(keys, key)
+		}
 	}
 
-	sort.Slice(keys, func(i, j int) bool {
-		return mapping[keys[i]] > mapping[keys[j]]
-	})
-
-	fmt.Println("Words sorted by frequency:")
 	for _, key := range keys {
-		fmt.Printf("%c: %d\n", key, mapping[key])
+		symbolmap[key] = mapping[key]
 	}
+
+	return symbolmap
 }
 
 func GetVocabularySize(wordmap map[string]int) int {
@@ -123,7 +123,7 @@ func GetCharacterFrequency(tweets []Tweet) map[rune]int {
 			runemap[char]++
 		}
 	}
-	OrderRunesByValue(runemap)
+
 	return runemap
 }
 

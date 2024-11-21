@@ -11,10 +11,38 @@ import (
 	"fmt"
 	"log"
 	"os"
-
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
 )
+
+func RenderSymbolPieChart(symbolFrequencyMap map[rune]int, filename string) {
+	var pieData []opts.PieData
+
+	for key, value := range symbolFrequencyMap {
+		pieData = append(pieData, opts.PieData{
+			Name: string(key),
+			Value: float64(value),
+		})
+	}
+
+	// Create new word cloud
+	pie := charts.NewPie()
+	pie.AddSeries("Symbol Frequency", pieData)
+
+	// Create the file to save the chart as HTML
+	f, err := os.Create(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+
+	// Render the chart into the HTML file
+	if err := pie.Render(f); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println("Chart saved as", filename)
+}
 
 func RenderWordCloud(wordFrequencyMap map[string]int, filename string) {
 	var cloudData []opts.WordCloudData
@@ -28,7 +56,7 @@ func RenderWordCloud(wordFrequencyMap map[string]int, filename string) {
 
 	// Create new word cloud
 	wordCloud := charts.NewWordCloud()
-	wordCloud.AddSeries("wordcloud", cloudData)
+	wordCloud.AddSeries("Top 20 Most Frequent Words", cloudData)
 
 	// Create the file to save the chart as HTML
 	f, err := os.Create(filename)
