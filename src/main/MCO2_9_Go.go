@@ -58,5 +58,11 @@ func main() {
 		tweetSlice = append(tweetSlice, currTweet)
 	}
 	fmt.Println(wordCount)
-	fmt.Println(GetWordFrequency(tweetSlice))
+	GetWordFrequency(tweetSlice)
+	GetCharacterFrequency(tweetSlice)
+	fmt.Println("STOP WORDS")
+	fmt.Println(GetCountStopWords(tweetSlice))
+
+	// Handle the route for displaying the bar chart
+	RenderBarChart()
 }
