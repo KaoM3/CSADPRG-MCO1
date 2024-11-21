@@ -17,7 +17,8 @@ To run this project, ensure that you have the following installed:
 - **Go Modules**: This project uses Go modules for dependency management.
 
 You also need a CSV file containing tweet data. The CSV file should follow the format:
-
+headers: [tweet_id, user_id, date_created, text, language]
+wherein date_created: dd/mm/yyyy h:mm
 
 ## Installation
 
@@ -37,14 +38,16 @@ go mod tidy
 
 ## Usage
 **Step 1: Build the program**
-Make sure your CSV file is properly formatted and contains the tweet data you want to analyze. You can place the file in the project's directory or specify the file path when running the program.
+Make sure your CSV file is properly formatted and contains the tweet data you want to analyze.
+You can place the file in the project's directory or specify the file path when running the program. To build the program, use the following command:
 
 ```powershell
 go build -o MCO2_9_Go.exe ./src/main
 ```
 
 **Step 2: Run the Program**
-To analyze the CSV file and generate charts, run the Go program with the following command:
+To run the Go program, use the following command:
+
 ```powershell
 ./MCO2_9_Go.exe
 ```
