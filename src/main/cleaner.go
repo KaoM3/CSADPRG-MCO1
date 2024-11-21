@@ -10,10 +10,10 @@ package main
 import (
 	"fmt"
 	"regexp"
-	"unicode"
 	"sort"
 	"strings"
 	"time"
+	"unicode"
 )
 
 // Helper function to clean and split the text into words
@@ -26,7 +26,7 @@ func tokenize(text string) []string {
 }
 
 func parseDate(dateString string) Date {
-	parsedTime, err := time.Parse("2006-01-02", dateString[:10])
+	parsedTime, err := time.Parse("02/01/2006", dateString[:10])
 
 	date := Date{
 		Year:  parsedTime.Year(),
@@ -45,7 +45,7 @@ func stopWords() string {
 	return stop_words
 }
 
-func GetMostFrequentWords(mapping map[string]int, size int) map[string]int{
+func GetMostFrequentWords(mapping map[string]int, size int) map[string]int {
 	var keys []string
 	wordmap := make(map[string]int)
 
@@ -59,7 +59,7 @@ func GetMostFrequentWords(mapping map[string]int, size int) map[string]int{
 
 	for i, key := range keys {
 		wordmap[key] = mapping[key]
-		if(i >= size - 1) {
+		if i >= size-1 {
 			break
 		}
 	}
@@ -93,7 +93,7 @@ func GetCountStopWords(tweets []Tweet) map[string]int {
 
 	for _, currTweet := range tweets {
 		for _, currToken := range currTweet.Tokens {
-			if(re.MatchString(currToken)) {
+			if re.MatchString(currToken) {
 				stopwordmap[currToken]++
 			}
 		}
@@ -133,7 +133,7 @@ func GetTweetFrequency(tweets []Tweet) map[int]map[string]int {
 
 	for _, currTweet := range tweets {
 		year := currTweet.Date_created.Year
-		month := monthnames[currTweet.Date_created.Month - 1]
+		month := monthnames[currTweet.Date_created.Month-1]
 		if tweetfrequencymap[year] == nil {
 			tweetfrequencymap[year] = make(map[string]int)
 		}
