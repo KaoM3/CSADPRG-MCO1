@@ -10,6 +10,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"encoding/csv"
 )
 
 type Date struct {
@@ -41,11 +43,27 @@ func getFilePath() string {
 	return filepath
 }
 
+func readCSV(filename string) ([][]string, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	
+	reader := csv.NewReader(file)
+	reader.Read()	// Skips the header
+	records, err := reader.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return records, nil
+}
+
+
 func main() {
-	// Reading file
-	// TODO: Replace with getting input of file location
-	filename := "C:\\Users\\Rafael\\Documents\\GitHub\\CSADPRG-MCO2\\fake_tweets.csv"
-	records, err := ReadCSV(filename)
+	filename := getFilePath()
+	records, err := readCSV(filename)
 	if(err != nil) {
 		log.Fatal("Cannot open and read CSV file")
 	}
@@ -71,7 +89,6 @@ func main() {
 	}
 
 	fmt.Print(dataAnalysis)
-	// TODO: Order then render
 
 	RenderWordCloud(GetMostFrequentWords(dataAnalysis.word_frequency, 20), "word-cloud.html")
 	RenderTweetFrequency(dataAnalysis.tweet_frequency, "tweet-frequency-chart.html")
