@@ -13,6 +13,7 @@ import (
 	"os"
 	"strings"
 	"encoding/csv"
+	"sort"
 )
 
 type Date struct {
@@ -62,6 +63,38 @@ func readCSV(filename string) ([][]string, error) {
 	return records, nil
 }
 
+func printWordFrequency(wordmap map[string]int) {
+	var keys []string
+
+	for key := range wordmap {
+		keys = append(keys, key)
+	}
+
+	sort.Slice(keys, func(i, j int) bool {
+		return wordmap[keys[i]] < wordmap[keys[j]]
+	})
+
+	for _, key := range keys {
+		fmt.Println("Count:", wordmap[key], "\t", key)
+	}
+}
+
+func printCharFrequency(runemap map[rune]int) {
+	var keys []rune
+
+	for key := range runemap {
+		keys = append(keys, key)
+	}
+
+	sort.Slice(keys, func(i, j int) bool {
+		return runemap[keys[i]] < runemap[keys[j]]
+	})
+
+	for _, key := range keys {
+		fmt.Printf("Count: %d \t '%c'\n", runemap[key], key)
+	}
+}
+
 
 func main() {
 	filename := getFilePath()
@@ -76,7 +109,6 @@ func main() {
 
 	for _, eachrecord := range records {
 		currTweet := ParseRecord(eachrecord)
-		fmt.Println(currTweet)
 		wordCount += currTweet.Word_count
 		tweetSlice = append(tweetSlice, currTweet)
 	}
@@ -90,7 +122,17 @@ func main() {
 		tweet_frequency:		GetTweetFrequency(tweetSlice),
 	}
 
-	fmt.Print(dataAnalysis)
+	fmt.Println("Word count:", dataAnalysis.word_count)
+	fmt.Println("Vocabulary size:", dataAnalysis.vocabulary_size)
+	fmt.Printf("\nWord frequency in ascending order:\n")
+	printWordFrequency(dataAnalysis.word_frequency)
+	fmt.Printf("\nCharacter frequency in ascending order:\n")
+	printCharFrequency(dataAnalysis.character_frequency)
+	fmt.Printf("\nTop 20 Most Frequent Words:\n")
+	printWordFrequency(GetMostFrequentWords(dataAnalysis.word_frequency, 20))
+	fmt.Printf("\nStop Words:\n")
+	printWordFrequency(dataAnalysis.stop_word_count)
+
 
 	RenderWordCloud(GetMostFrequentWords(dataAnalysis.word_frequency, 20), "word-cloud.html")
 	RenderTweetFrequency(dataAnalysis.tweet_frequency, "tweet-frequency-chart.html")
