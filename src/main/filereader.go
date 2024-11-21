@@ -1,3 +1,10 @@
+/*
+********************
+Last name: Bernandino
+Language: Go
+Paradigm(s): Procedural, Multi-paradigm
+********************
+*/
 package main
 
 import (
@@ -7,12 +14,10 @@ import (
 
 func ReadCSV(filename string) ([][]string, error) {
 	file, err := os.Open(filename)
-
-	defer file.Close()
-
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 	
 	reader := csv.NewReader(file)
 	reader.Read()	// Skips the header
