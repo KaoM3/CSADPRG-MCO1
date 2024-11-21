@@ -53,7 +53,7 @@ To run the Go program, use the following command:
 ```
 
 **Step 3: Give the necessary input**
-The program will prompt you to enter the file path of the CSV file. Include the .csv file extension and remove the "".
+The program will prompt you to enter the file path of the CSV file. Include the .csv file extension in the filepath.
 
 **Step 4: View the Charts**
 After running the program, the charts will be generated and saved to the disk as html files. You can view these charts in your browser.

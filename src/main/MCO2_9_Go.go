@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 	"encoding/csv"
 )
 
@@ -40,6 +41,7 @@ func getFilePath() string {
 	var filepath string
 	fmt.Println("Enter file path of CSV file")
 	fmt.Scanln(&filepath)
+	filepath = strings.ReplaceAll(filepath, `"`, "")
 	return filepath
 }
 
