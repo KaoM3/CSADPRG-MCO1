@@ -89,11 +89,7 @@ func GetCountStopWords(tweets []Tweet) map[string]int {
 	for _, currTweet := range tweets {
 		for _, currToken := range currTweet.Tokens {
 			if(re.MatchString(currToken)) {
-				if _, found := stopwordmap[currToken]; found {
-					stopwordmap[currToken] += 1
-				} else {
-					stopwordmap[currToken] = 1
-				}
+				stopwordmap[currToken]++
 			}
 		}
 	}
@@ -106,11 +102,7 @@ func GetWordFrequency(tweets []Tweet) map[string]int {
 
 	for _, currTweet := range tweets {
 		for _, currToken := range currTweet.Tokens {
-			if _, found := wordmap[currToken]; found {
-				wordmap[currToken] += 1
-			} else {
-				wordmap[currToken] = 1
-			}
+			wordmap[currToken]++
 		}
 	}
 	OrderStringsByValue(wordmap)
@@ -128,6 +120,22 @@ func GetCharacterFrequency(tweets []Tweet) map[rune]int {
 	}
 	OrderRunesByValue(runemap)
 	return runemap
+}
+
+func GetTweetFrequency(tweets []Tweet) map[int]map[string]int {
+	monthnames := [12]string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
+	tweetfrequencymap := make(map[int]map[string]int)
+
+	for _, currTweet := range tweets {
+		year := currTweet.Date_created.Year
+		month := monthnames[currTweet.Date_created.Month - 1]
+		if tweetfrequencymap[year] == nil {
+			tweetfrequencymap[year] = make(map[string]int)
+		}
+		tweetfrequencymap[year][month]++
+	}
+
+	return tweetfrequencymap
 }
 
 func ParseRecord(record []string) Tweet {
