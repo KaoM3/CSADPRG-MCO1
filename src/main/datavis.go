@@ -8,38 +8,52 @@ Paradigm(s): Procedural, Multi-paradigm
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+
 	"github.com/go-echarts/go-echarts/v2/charts"
 	"github.com/go-echarts/go-echarts/v2/opts"
 )
 
-func RenderBarChart() {
-	barchart := charts.NewBar()
-	xAxis := []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
+func RenderTweetFrequency(tweetFrequencyMap map[int]map[string]int, filename string) {
+	monthNames := [12]string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
+	var seriesNames []string
+	var barData [][]opts.BarData // 2D Array: Rows as years, Columns as Months
 
-	// Set up the y-axis data (values for the bars)
-	yAxis := []opts.BarData{
-		{Value: 120}, {Value: 132}, {Value: 101}, {Value: 134}, {Value: 90},
-		{Value: 115}, {Value: 160}, {Value: 110}, {Value: 130}, {Value: 140},
-		{Value: 180}, {Value: 150},
+	// Iterate over the tweetFrequencyMap to prepare the data
+	for year, monthData := range tweetFrequencyMap {
+		var monthlyCounts []opts.BarData
+		for _, month := range monthNames {
+			// If there's no tweet data for this month, use 0
+			count := float64(monthData[month]) // Convert to float64
+			monthlyCounts = append(monthlyCounts, opts.BarData{
+				Value: count,
+			})
+		}
+		barData = append(barData, monthlyCounts)
+		seriesNames = append(seriesNames, fmt.Sprintf("%d", year))
 	}
 
-	// Add the bar series to the chart
-	barchart.AddSeries("Sales", yAxis).SetXAxis(xAxis)
-	barchart.AddSeries("OtherSales", yAxis).SetXAxis(xAxis)
+	// Create new bar
+	bar := charts.NewBar()
+	bar.SetXAxis(monthNames[:])
+
+	for i, data := range barData {
+		bar.AddSeries(seriesNames[i], data)
+	}
 
 	// Create the file to save the chart as HTML
-	f, err := os.Create("chart.html")
+	f, err := os.Create(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
 	// Render the chart into the HTML file
-	if err := barchart.Render(f); err != nil {
+	if err := bar.Render(f); err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("Chart saved as chart.html")
+	log.Println("Chart saved as", filename)
 }
