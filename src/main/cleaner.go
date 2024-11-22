@@ -25,8 +25,12 @@ func tokenize(text string) []string {
 	return words
 }
 
-func parseDate(dateString string) Date {
-	parsedTime, err := time.Parse("02/01/2006", dateString[:10])
+func parseDate(dateString string, format string) (Date, error) {
+	parsedTime, err := time.Parse(format, dateString[:10])
+	
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	date := Date{
 		Year:  parsedTime.Year(),
@@ -34,10 +38,7 @@ func parseDate(dateString string) Date {
 		Day:   parsedTime.Day(),
 	}
 
-	if err != nil {
-		fmt.Println(err)
-	}
-	return date
+	return date, err
 }
 
 func stopWords() string {
@@ -145,9 +146,23 @@ func GetTweetFrequency(tweets []Tweet) map[int]map[string]int {
 
 func ParseRecord(record []string) Tweet {
 	tokens := tokenize(record[3])
+	var parsedDate Date
+	var err error
+
+	if parsedDate, err = parseDate(record[2], "2006-01-02"); err != nil {
+		parsedDate, err = parseDate(record[2], "02/01/2006")
+		if err != nil {
+			// Default if all parse failed
+			parsedDate = Date{
+				Year: 1999,
+				Month: 1,
+				Day: 1,
+			}
+		}
+	}
 
 	newTweet := Tweet{
-		Date_created: parseDate(record[2]),
+		Date_created: parsedDate,
 		Text:         record[3],
 		Tokens:       tokens,
 		Word_count:   len(tokens),

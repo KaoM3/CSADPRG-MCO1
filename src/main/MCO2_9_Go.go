@@ -100,6 +100,7 @@ func main() {
 	filename := getFilePath()
 	records, err := readCSV(filename)
 	if(err != nil) {
+		fmt.Println(err)
 		log.Fatal("Cannot open and read CSV file")
 	}
 	
